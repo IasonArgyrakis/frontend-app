@@ -20,13 +20,13 @@ export interface IFormBackEndError {
     isInvalid: boolean,
     message: string|undefined;
 }
-class BackEndError implements IbackEndError{
+class FormBackEndError implements IFormBackEndError{
     isInvalid=false;
     message: string|undefined;
 
 }
 
-export const backendError= new BackEndError();
+export const formBackEndError= new FormBackEndError();
 
 
 class BackEndClient implements IHttpClient {
@@ -34,6 +34,8 @@ class BackEndClient implements IHttpClient {
     config: CreateAxiosDefaults = {
         baseURL: 'http://localhost:3333'
     }
+    backendClient=axios.create(this.config)
+
 
     get<T>(parameters: IHttpClientRequestParameters): Promise<T> {
         return new Promise<T>((resolve, reject) => {
@@ -51,7 +53,7 @@ class BackEndClient implements IHttpClient {
             }
 
             // finally execute the GET request with axios:
-            axios
+            this.backendClient
                 .get(url, options)
                 .then((response: any) => {
                     resolve(response.data as T)
@@ -78,7 +80,7 @@ class BackEndClient implements IHttpClient {
             }
 
             // finally execute the GET request with axios:
-            axios
+            this.backendClient
                 .post(url, payload, options)
                 .then((response: any) => {
                     resolve(response.data as T)
@@ -105,7 +107,7 @@ class BackEndClient implements IHttpClient {
             }
 
             // finally execute the GET request with axios:
-            axios
+            this.backendClient
                 .patch(url, payload, options)
                 .then((response: any) => {
                     resolve(response.data as T)

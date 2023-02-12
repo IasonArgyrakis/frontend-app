@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {register, User} from '../services/auth';
 import {useNavigate} from "react-router-dom";
 import {Button, TextField} from "@mui/material";
-import {backendError} from "../services/data.service";
+import {formBackEndError} from "../services/data.service";
 
 
 const LoginPage = () => {
@@ -14,11 +14,11 @@ const LoginPage = () => {
         lastName: "",
         afm: "",
         errors: {
-            email: backendError,
-            password: backendError,
-            firstName: backendError,
-            lastName: backendError,
-            afm: backendError,
+            email: formBackEndError,
+            password: formBackEndError,
+            firstName: formBackEndError,
+            lastName: formBackEndError,
+            afm: formBackEndError,
         }
     });
 
@@ -48,13 +48,7 @@ const LoginPage = () => {
         event.preventDefault();
 
         try {
-            const user_creds: User = {
-                email: form.email,
-                password: form.password,
-                afm: form.afm,
-                firstName: form.firstName,
-                lastName: form.lastName,
-            }
+            const user_creds: User = {...form}
             await register(user_creds);
             navigate("/")
         } catch (error) {

@@ -1,18 +1,20 @@
 import { useEffect, useState } from 'react';
-import {_axios as axios} from "../services/auth";
-import { getToken } from '../services/auth';
+import {backend} from "../services/data.service";
 
 const DashboardPage = () => {
     const [data, setData] = useState('');
 
+    const fetchData = async () => {
+        const response =  await backend.get({
+            url:'/users',
+            requiresToken:true
+
+        })
+        console.log(response)
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            const response = await axios.get('/users', {
-                headers: { Authorization: `Bearer ${getToken()}` },
-            });
-            setData(response.data);
-        };
-        fetchData();
+       fetchData()
     }, []);
 
     return (
