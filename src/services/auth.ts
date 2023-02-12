@@ -1,9 +1,7 @@
-import axios from 'axios';
 import jwtDecode from 'jwt-decode';
+import {backend} from "./data.service";
 
-export  const _axios = axios.create({
-    baseURL: 'http://localhost:3333'
-})
+
 const access_token = 'super-secret';
 
 export class User {
@@ -19,24 +17,24 @@ export class User {
 
 
 export const login = async (user: User) => {
-    const response = await _axios.post('/auth/signup', {...user}).then((response) => {
-            localStorage.setItem(access_token, response.data.access_token);
-            console.log(response);
-        },
-        (reason) => {
-            console.log(reason);
-        }
-    );
+
+    const response = await backend.post({
+        url: '/auth/signup',
+        payload: {...user},
+    })
 
 
 };
 
 export const register = async (user: User) => {
-    const response = await _axios.post('/auth/signup', {...user}).then((response) => {
-            localStorage.setItem(access_token, response.data.access_token);
-            console.log(response);
-        },
-    );
+
+    const response = await backend.post({
+        url: '/auth/signup',
+        payload: {...user},
+    })
+    console.log(response)
+
+
 };
 
 export const logout = () => {

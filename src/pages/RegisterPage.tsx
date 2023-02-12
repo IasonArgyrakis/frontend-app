@@ -1,9 +1,8 @@
 import React, {useState} from 'react';
-
 import {register, User} from '../services/auth';
 import {useNavigate} from "react-router-dom";
-import axios from "axios";
 import {Button, TextField} from "@mui/material";
+import {backendError} from "../services/data.service";
 
 
 const LoginPage = () => {
@@ -15,11 +14,11 @@ const LoginPage = () => {
         lastName: "",
         afm: "",
         errors: {
-            email: false,
-            password: false,
-            firstName: false,
-            lastName: false,
-            afm: false,
+            email: backendError,
+            password: backendError,
+            firstName: backendError,
+            lastName: backendError,
+            afm: backendError,
         }
     });
 
@@ -60,30 +59,7 @@ const LoginPage = () => {
             navigate("/")
         } catch (error) {
 
-
-            if (axios.isAxiosError(error)) {
-                let error_msgs: [] = error?.response?.data?.message;
-
-                let new_errors = {errors: form.errors};
-
-
-                const split = function split(str: string, index: number) {
-                    return [str.slice(0, index), str.slice(index + 1)];
-                }
-
-
-                error_msgs.forEach((error_msg: string) => {
-
-                    const index = error_msg.indexOf(" ");
-                    const [key, value] = split(error_msg, index)
-                    // @ts-ignore
-                    new_errors[key] = value;
-                })
-
-                handleError({errors: new_errors})
-
-
-            }
+            console.log(error)
 
         }
     };
@@ -96,8 +72,8 @@ const LoginPage = () => {
                     <TextField
                         label="First Name"
                         value={form.firstName}
-                        helperText={form.errors.firstName}
-                        error={form.errors.firstName}
+                        helperText={form.errors.firstName.message}
+                        error={form.errors.firstName.isInvalid}
                         onChange={(event) => handleChange("firstName", event)}
                     />
                 </div>
@@ -105,8 +81,8 @@ const LoginPage = () => {
                     <TextField
                         label="Last Name"
                         value={form.lastName}
-                        helperText={form.errors.lastName}
-                        error={form.errors.lastName}
+                        helperText={form.errors.lastName.message}
+                        error={form.errors.lastName.isInvalid}
                         onChange={(event) => handleChange("lastName", event)}
                     />
                 </div>
@@ -114,8 +90,8 @@ const LoginPage = () => {
                     <TextField
                         label="afm"
                         value={form.afm}
-                        helperText={form.errors.afm}
-                        error={form.errors.afm}
+                        helperText={form.errors.afm.message}
+                        error={form.errors.afm.isInvalid}
                         onChange={(event) => handleChange("afm", event)}
                     />
                 </div>
@@ -123,8 +99,8 @@ const LoginPage = () => {
                     <TextField
                         label="email"
                         value={form.email}
-                        helperText={form.errors.email}
-                        error={form.errors.email !== false}
+                        helperText={form.errors.email.message}
+                        error={form.errors.email.isInvalid}
                         onChange={(event) => handleChange("email", event)}
                     />
                 </div>
@@ -132,8 +108,8 @@ const LoginPage = () => {
                     <TextField
                         label="password"
                         value={form.password}
-                        helperText={form.errors.password}
-                        error={form.errors.password}
+                        helperText={form.errors.password.message}
+                        error={form.errors.password.isInvalid}
                         onChange={(event) => handleChange("password", event)}
                     />
                 </div>
