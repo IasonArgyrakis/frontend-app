@@ -1,10 +1,12 @@
-import axios, {AxiosRequestConfig, CreateAxiosDefaults, AxiosError, AxiosResponse} from 'axios'
+import axios, {AxiosRequestConfig, CreateAxiosDefaults} from 'axios'
 import {getToken} from "./auth";
+
 
 
 export interface IHttpClientRequestParameters {
     url: string
     requiresToken?: boolean
+    isForm?: boolean
     payload?: Object
 }
 
@@ -16,17 +18,6 @@ export interface IHttpClient {
     patch<T>(parameters: IHttpClientRequestParameters): Promise<T>
 }
 
-export interface IFormBackEndError {
-    isInvalid: boolean,
-    message: string|undefined;
-}
-class FormBackEndError implements IFormBackEndError{
-    isInvalid=false;
-    message: string|undefined;
-
-}
-
-export const formBackEndError= new FormBackEndError();
 
 
 class BackEndClient implements IHttpClient {
@@ -34,7 +25,7 @@ class BackEndClient implements IHttpClient {
     config: CreateAxiosDefaults = {
         baseURL: 'http://localhost:3333'
     }
-    backendClient=axios.create(this.config)
+    backendClient = axios.create(this.config)
 
 
     get<T>(parameters: IHttpClientRequestParameters): Promise<T> {
@@ -58,15 +49,20 @@ class BackEndClient implements IHttpClient {
                 .then((response: any) => {
                     resolve(response.data as T)
                 })
-                .catch((response: any) => {
-                    reject(response)
+                .catch((response) => {
+                    const error ={...response.response}
+                    console.log(error)
+                    if(error.status===400){
+                        reject(error.data?.errors)
+                    }
+                    reject(error.data)
                 })
         })
     }
 
     post<T>(parameters: IHttpClientRequestParameters): Promise<T> {
         return new Promise<T>((resolve, reject) => {
-            const {url, payload, requiresToken = false} = parameters
+            const {url, payload, requiresToken = false, isForm = false} = parameters
 
             const options: AxiosRequestConfig = {
                 headers: {}
@@ -79,14 +75,21 @@ class BackEndClient implements IHttpClient {
                 }
             }
 
+
             // finally execute the GET request with axios:
             this.backendClient
                 .post(url, payload, options)
                 .then((response: any) => {
+                    console.log(response)
                     resolve(response.data as T)
                 })
-                .catch((response: any) => {
-                    reject(response)
+                .catch((response) => {
+                    const error ={...response.response}
+                    console.log(error)
+                    if(error.status===400){
+                        reject(error.data?.errors)
+                    }
+                    reject(error.data)
                 })
         })
     }
@@ -112,8 +115,12 @@ class BackEndClient implements IHttpClient {
                 .then((response: any) => {
                     resolve(response.data as T)
                 })
-                .catch((response: any) => {
-                    reject(response)
+                .catch((response) => {
+                    const error ={...response.response}
+                    if(error.status===400){
+                        reject(error.data?.errors)
+                    }
+                    reject(error.data)
                 })
         })
     }

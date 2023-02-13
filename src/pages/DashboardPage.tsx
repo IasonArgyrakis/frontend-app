@@ -1,26 +1,23 @@
 import { useEffect, useState } from 'react';
 import {backend} from "../services/data.service";
+import Users from "../components/users";
 
 const DashboardPage = () => {
-    const [data, setData] = useState('');
+    const [users, setUsers] = useState([]);
+
+
 
     const fetchData = async () => {
-        const response =  await backend.get({
-            url:'/users',
-            requiresToken:true
 
-        })
-        console.log(response)
+
+
     };
 
-    useEffect(() => {
-       fetchData()
-    }, []);
 
     return (
         <div>
             <h1>Dashboard</h1>
-            <p>{data.toString()}</p>
+            <Users ></Users>
         </div>
     );
 };

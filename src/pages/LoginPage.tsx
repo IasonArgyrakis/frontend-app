@@ -1,42 +1,82 @@
-import { useState } from 'react';
-import {login, User} from '../services/auth';
+import React from 'react';
+import {login, register} from '../services/auth';
+import {Button} from "@mui/material";
+import {Formik, Form, Field} from 'formik';
+import {TextField} from 'formik-mui';
 import {useNavigate} from "react-router-dom";
+
+
+
+interface Values {
+    email: string;
+    password: string;
+}
+
 const LoginPage = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
     const navigate = useNavigate();
+    const submit = (values: any, {setSubmitting, setErrors}: any) => {
+
+        setSubmitting(false);
+        login(values).then(()=>{
+                navigate("/")
+            }
+        ).catch((errors) => {
+            setErrors(errors)
+        })
 
 
-
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-
-        try {
-
-            const user_creds:User={email:email,password:password}
-            await login(user_creds);
-            navigate('/login');
-        } catch (error) {
-            setError('Invalid email or password');
-        }
-    };
+    }
 
     return (
         <div>
-            <h1>Login</h1>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Email:</label>
-                    <input type="text" value={email} onChange={(event) => setEmail(event.target.value)} />
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} />
-                </div>
-                {error && <div>{error}</div>}
-                <button type="submit">Login</button>
-            </form>
+            <h1>Register</h1>
+            <Formik
+                initialValues={{
+                    email: "",
+                    password: "",
+
+                }}
+                validate={(values) => {
+                    const errors: Partial<Values> = {};
+                    if (!values.email) {
+                        errors.email = 'Required';
+                    } else if (
+                        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
+                    ) {
+                        errors.email = 'Invalid email address';
+                    }
+                    return errors;
+                }}
+                onSubmit={submit}
+            >
+                {({submitForm, isSubmitting}) => (
+                    <Form>
+                        <Field
+                            component={TextField}
+                            name="email"
+                            type="email"
+                            label="Email"
+                        />
+                        <br/>
+                        <Field
+                            component={TextField}
+                            type="password"
+                            label="Password"
+                            name="password"
+                        />
+                        <br/>
+
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            disabled={isSubmitting}
+                            onClick={submitForm}
+                        >
+                            Submit
+                        </Button>
+                    </Form>
+                )}
+            </Formik>
         </div>
     );
 };

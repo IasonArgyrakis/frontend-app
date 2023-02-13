@@ -4,35 +4,47 @@ import {backend} from "./data.service";
 
 const access_token = 'super-secret';
 
-export class User {
 
-    id?: number
-    firstName?: string
-    lastName?: string
-    afm?: string
-    email?: string
-    password?: string
-    access_token?: string
-}
+export const login = async (user:any) => {
+    return new Promise(async (resolve, reject) => {
 
 
-export const login = async (user: User) => {
+        backend.post({
+            url: '/auth/singin',
+            payload: user,
+        }).then((registered:any) => {
+                console.log(registered)
+                const token=registered.access_token
+                console.log(token)
+                localStorage.setItem(access_token,token );
+                resolve(registered)
+            }
+        ).catch(reject)
 
-    const response = await backend.post({
-        url: '/auth/signup',
-        payload: {...user},
-    })
+
+    });
 
 
 };
 
-export const register = async (user: User) => {
+export const register = async (user: any) => {
+    return new Promise(async (resolve, reject) => {
 
-    const response = await backend.post({
-        url: '/auth/signup',
-        payload: {...user},
-    })
-    console.log(response)
+
+        backend.post({
+            url: '/auth/signup',
+            payload: user,
+        }).then((registered:any) => {
+            console.log(registered)
+            const token=registered.access_token
+            console.log(token)
+                localStorage.setItem(access_token,token );
+                resolve(registered)
+            }
+        ).catch(reject)
+
+
+    });
 
 
 };
@@ -56,5 +68,6 @@ export const isLoggedIn = () => {
 };
 
 export const getToken = () => {
+    console.log(localStorage.getItem(access_token))
     return localStorage.getItem(access_token);
 };
