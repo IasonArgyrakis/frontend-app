@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useEffect, useState} from "react";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -7,77 +7,83 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import {backend} from "../services/data.service";
-import {array} from "yup";
 
 
 
-function createData(
-    id: number,
-    firstName: string,
-    lastName: string,
-    afm:string,
-    email:string,
-) {
-    return { id, firstName,lastName,afm,email };
+function createData(id: number,
+                    firstName: string,
+                    lastName: string,
+                    afm: string,
+                    email: string,) {
+    return {id, firstName, lastName, afm, email};
+
 }
 
 
-let userRows: any[] = [
-  ];
-
-backend.get({
-    url:'/users',
-    requiresToken:true
-
-}).then((data:any)=>{
-    console.log(data)
-    userRows=data
-    console.log(userRows)
-    userRows.map((user:any)=>{createData(user.id,user.firstName,user.lastName,user.afm,user.email)})
-})
 
 
-export default function Users() {
+export default  function  Users () {
+    const userList: any[]=[];
+    const [users, setUsers] = useState({list:userList});
 
 
 
-    return (
-        <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell>id</TableCell>
-                        <TableCell >First Name</TableCell>
-                        <TableCell >Last Name</TableCell>
-                        <TableCell >AFM</TableCell>
-                        <TableCell >Email</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {userRows.map((row) => (
-                        <TableRow
-                            key={row.id}
-                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        >
-                            <TableCell component="th" scope="row">
-                                {row.id}
-                            </TableCell>
-                            <TableCell component="th" scope="row">
-                                {row.firstName}
-                            </TableCell>
-                            <TableCell component="th" scope="row">
-                                {row.lastName}
-                            </TableCell>
-                            <TableCell component="th" scope="row">
-                                {row.afm}
-                            </TableCell>
-                            <TableCell component="th" scope="row">
-                                {row.email}
-                            </TableCell>
+
+    useEffect(()=>{
+        backend.get({
+           url: '/users',
+           requiresToken: true
+       }).then((data: any) => {
+           const userListData=  data.map((user: { id: number; firstName: string; lastName: string; afm: string; email: string; }) => {
+               return createData(user.id, user.firstName, user.lastName, user.afm, user.email);
+           });
+           setUsers( {list:userListData})
+
+       })
+
+
+
+    },[])
+
+
+
+
+
+
+
+        return (
+            <TableContainer component={Paper}>
+                <Table sx={{minWidth: 650}} aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>id</TableCell>
+                            <TableCell>First Name</TableCell>
+                            <TableCell>Last Name</TableCell>
+                            <TableCell>AFM</TableCell>
+                            <TableCell>Email</TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
-    );
+                    </TableHead>
+                    <TableBody>
+                        {users.list.length &&
+                            users.list.map(user => {
+                              console.log(user)
+                                return (
+                                    <TableRow
+                                        key={user.id}
+                                    >
+                                        <TableCell component="th" scope="row">
+                                            {user.id}
+                                        </TableCell>
+                                        <TableCell align="right">{user.firstName}</TableCell>
+                                        <TableCell align="right">{user.lastName}</TableCell>
+                                        <TableCell align="right">{user.email}</TableCell>
+                                        <TableCell align="right">{user.afm}</TableCell>
+                                    </TableRow>
+                                );
+                            })}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        );
+
 }
