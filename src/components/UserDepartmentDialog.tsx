@@ -8,10 +8,10 @@ import Dialog from '@mui/material/Dialog';
 import {backend} from "../services/data.service";
 import {IDepartment, IUser, reducerUsers, useGlobalState} from "../state";
 import {useEffect} from "react";
-import {createData} from "./departments";
+import {createDepartmentData} from "./departments";
 import {useNavigate} from "react-router-dom";
 import {Checkbox} from "@mui/material";
-import {createUserData} from "./users";
+import {createUserData} from "./Users";
 
 
 export interface UserDepartmentDialogProps {
@@ -22,7 +22,6 @@ export interface UserDepartmentDialogProps {
 }
 
 export function UserDepartmentDialog(props: UserDepartmentDialogProps) {
-    const nav = useNavigate();
     let {user, open, onClose} = props;
     const [users, updateUsers] = useGlobalState('users');
     const [departments, updateDepartmentList] = useGlobalState('departments');
@@ -34,7 +33,7 @@ export function UserDepartmentDialog(props: UserDepartmentDialogProps) {
             requiresToken: true
         }).then((data: any) => {
             let departmentsListData: any[] = data.map((departments: IDepartment) => {
-                return createData(departments.id, departments.title);
+                return createDepartmentData(departments.id, departments.title);
             });
             updateDepartmentList(departmentsListData)
 
@@ -58,18 +57,42 @@ export function UserDepartmentDialog(props: UserDepartmentDialogProps) {
         }
 
         const index = user.departments.findIndex((item) => item.id === parseInt(e.target.value))
-        console.log(index=== -1)
+        console.log(index === -1)
         if (index === -1) {
 
-            backend.put(userUpdate).then((success) => {
+            backend.put(userUpdate).finally(() => {
+                backend.get({
+                    url: '/users',
+                    requiresToken: true
+                }).then((data: any) => {
+                    let departmentsListData: any[] = data.map((user: IUser) => {
+                        return user
+                    });
+                    updateUsers(departmentsListData)
 
+                }).catch(() => {
+
+                })
             })
+
         } else {
-            backend.delete(userUpdate).then((success) => {
-                console.log("del")
+            backend.delete(userUpdate).finally(() => {
+                backend.get({
+                    url: '/users',
+                    requiresToken: true
+                }).then((data: any) => {
+                    let departmentsListData: any[] = data.map((user: IUser) => {
+                        return user
+                    });
+                    updateUsers(departmentsListData)
+
+                }).catch(() => {
+
+                })
             })
 
         }
+
 
 
     }
@@ -86,7 +109,7 @@ export function UserDepartmentDialog(props: UserDepartmentDialogProps) {
             <div style={fieldStyle}>
 
                 {departments.map((department) => {
-                        const isInDepartment = user.departments.find((entry) => entry?.id === department.id)
+                        let isInDepartment = user.departments?.find((entry) => entry?.id === department.id)
 
 
                         return (

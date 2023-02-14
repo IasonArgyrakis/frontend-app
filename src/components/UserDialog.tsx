@@ -46,6 +46,7 @@ export function UserDialog(props: UserDialogProps) {
     const submit = (values: any, {setSubmitting, setErrors}: any) => {
 
         setSubmitting(false);
+        delete values.departments
         backend.put({
             url: '/users',
             payload: values,

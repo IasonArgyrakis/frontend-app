@@ -1,16 +1,14 @@
 import {createGlobalState} from 'react-hooks-global-state';
-import {backend} from "./services/data.service";
-import {createData} from "./components/departments";
-
 
 
 export interface IUser {
     id: number;
     firstName: string;
     lastName: string;
+    password?:string
     afm: string;
     email: string;
-    departments:Array<any>
+    departments:Array<any>|[]
 }
 
 export interface IDepartment {

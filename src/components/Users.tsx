@@ -14,32 +14,41 @@ import {UserDialog} from "./UserDialog";
 import {UserDepartmentDialog} from "./UserDepartmentDialog";
 
 
+
 export function createUserData(user:IUser) {
-    return {...user};
+    return user;
+
+}
+export interface UserPageProps {
+
+    onUpdate: (value: string) => void;
 
 }
 
 
 export default function Users() {
-
     const nav = useNavigate();
     const [users, updateUsers] = useGlobalState('users');
-
-
-    useEffect(() => {
+    const loadData = () => {
         backend.get({
             url: '/users',
             requiresToken: true
         }).then((data: any) => {
             let userListData: any[] = data.map((user: IUser) => {
-                return createUserData(user);
+                return user
             });
+            console.log("eUsers")
             updateUsers(userListData)
 
         }).catch(() => {
-         //   nav('/login')
+            // nav('/login')
         })
+    }
 
+
+    useEffect(() => {
+
+    loadData()
 
     }, [])
 
@@ -67,7 +76,7 @@ export default function Users() {
             requiresToken: true
         }).then((data: any) => {
             let userListData: any[] = data.map((user: IUser) => {
-                return createUserData(user);
+                return user
             });
             console.log(userListData)
             updateUsers(userListData)
@@ -87,8 +96,8 @@ export default function Users() {
                         <TableCell>id</TableCell>
                         <TableCell>First Name</TableCell>
                         <TableCell>Last Name</TableCell>
-                        <TableCell>AFM</TableCell>
                         <TableCell>Email</TableCell>
+                        <TableCell>AFM</TableCell>
                         <TableCell></TableCell>
                     </TableRow>
                 </TableHead>
@@ -129,6 +138,7 @@ export default function Users() {
                                         </Button>
 
                                         <UserDepartmentDialog
+                                            key={user.id}
                                             user={selectedUser}
                                             open={userDepartmentOpen}
                                             onClose={handleClose}/>

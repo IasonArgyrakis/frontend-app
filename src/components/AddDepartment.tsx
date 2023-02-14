@@ -1,10 +1,9 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Card, CardContent} from "@mui/material";
 import {Formik, Form, Field} from 'formik';
 import {TextField} from 'formik-mui';
-import {useNavigate} from "react-router-dom";
+
 import {backend} from "../services/data.service";
-import {useGlobalState} from "../state";
 
 
 
@@ -12,9 +11,17 @@ export interface IDepartmentValues {
     title: string;
 }
 
-const AddDepartment = () => {
-    const nav=useNavigate();
-    const [departments, update] = useGlobalState('departments');
+export interface UserDepartmentProps {
+
+    onUpdate: (value: string) => void;
+
+}
+const AddDepartment = (props:UserDepartmentProps) => {
+
+    let {onUpdate} = props;
+
+
+
     const submit = (values: any, {setSubmitting, setErrors}: any) => {
 
         setSubmitting(false);
@@ -22,20 +29,18 @@ const AddDepartment = () => {
             url: '/departments',
             payload: values,
         })
-        .then((data)=>{
+            .then((data) => {
+               onUpdate("list/2")
 
-
-        }).catch((errors) => {
+            }).catch((errors) => {
             console.log(errors)
-            setErrors({
-                title:errors
-            })
+            setErrors(
+                errors
+            )
         })
 
 
     }
-
-
 
     return (
         <div>
@@ -46,7 +51,7 @@ const AddDepartment = () => {
                 }}
                 validate={(values) => {
                     const errors: Partial<IDepartmentValues> = {};
-                    if (values.title==="") {
+                    if (values.title === "") {
                         errors.title = 'Required';
                     }
                     return errors;
@@ -56,9 +61,9 @@ const AddDepartment = () => {
                 {({submitForm, isSubmitting}) => (
                     <Card variant="outlined">
                         <CardContent className='pa-2'>
-                            <Form >
+                            <Form>
                                 <h1>Add Department</h1>
-                                <div >
+                                <div>
                                     <Field
 
                                         component={TextField}
@@ -69,14 +74,14 @@ const AddDepartment = () => {
                                     />
                                 </div>
                                 <div className='pa-2'>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    disabled={isSubmitting}
-                                    onClick={submitForm}
-                                >
-                                    Submit
-                                </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        disabled={isSubmitting}
+                                        onClick={submitForm}
+                                    >
+                                        Submit
+                                    </Button>
                                 </div>
                             </Form>
                         </CardContent>

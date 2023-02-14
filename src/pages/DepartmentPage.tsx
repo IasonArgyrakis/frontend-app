@@ -1,43 +1,45 @@
-
-import Departments, {createData} from "../components/departments";
+import Departments, {createDepartmentData} from "../components/departments";
 import AddDepartment from "../components/AddDepartment";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {backend} from "../services/data.service";
+import {useGlobalState} from "../state";
 
 const DepartmentPage = () => {
 
-    const departmentList: any[]=[];
-    const nav=useNavigate();
-    const [departments, setDepartment] = useState({list:departmentList});
+    const departmentList: any[] = [];
+    const nav = useNavigate();
+    const [departments, updateDepartmentList] = useGlobalState('departments');
 
-
-
-
-    useEffect(()=>{
+    const updateList=()=>{
+        console.log("list")
         backend.get({
             url: '/departments',
             requiresToken: true
         }).then((data: any) => {
-            const departmentListData=  data.map((user: { id: number; title: string;}) => {
-                return createData(user.id, user.title);
+            const departmentsList = data.map((user: { id: number; title: string; }) => {
+                return createDepartmentData(user.id, user.title);
             });
-            setDepartment( {list:departmentListData})
+            updateDepartmentList(departmentsList)
 
-        }).catch(()=>{
+        }).catch(() => {
             nav('/login')
         })
+    }
 
 
+    useEffect(() => {
 
-    },[])
+        updateList()
+
+    }, [])
 
 
     return (
         <div>
             <h1>Departments</h1>
-            <AddDepartment></AddDepartment>
-            <Departments ></Departments>
+            <AddDepartment onUpdate={updateList}></AddDepartment>
+            <Departments onUpdate={updateList}></Departments>
         </div>
     );
 };

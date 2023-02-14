@@ -1,6 +1,6 @@
 import axios, {AxiosRequestConfig, CreateAxiosDefaults} from 'axios'
 import {getToken} from "./auth";
-import {createData} from "../components/departments";
+import {createDepartmentData} from "../components/departments";
 import {IDepartment} from "../state";
 
 

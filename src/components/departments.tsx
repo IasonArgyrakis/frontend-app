@@ -1,4 +1,4 @@
-import React, {SyntheticEvent, useEffect, useState} from "react";
+import React, { useEffect, useState} from "react";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -11,24 +11,25 @@ import {useNavigate} from "react-router-dom";
 import {Button, Card, CardContent} from "@mui/material";
 import {Field, Form, Formik} from "formik";
 import {TextField} from "formik-mui";
-import {IDepartmentValues} from "./AddDepartment";
+import {IDepartmentValues, UserDepartmentProps} from "./AddDepartment";
 import {IDepartment, IUser, useGlobalState} from "../state";
 import EditDepartment from "./editDepartment";
 
 
-export function createData(id: number,
+export function createDepartmentData(id: number,
                            title: string,) {
     return {id, title};
 
 }
 
 
-export default function Department() {
+export default function Department(props:UserDepartmentProps){
 
 
     const nav = useNavigate();
-    const [departments, update] = useGlobalState('departments');
+    const [departments, updateDepartmentList] = useGlobalState('departments');
 
+    let {onUpdate} = props;
 
 
 
@@ -38,10 +39,10 @@ export default function Department() {
             url: '/departments',
             requiresToken: true
         }).then((data: any) => {
-            let departmentsListData:any[]=  data.map((departments: IDepartment) => {
-                return createData(departments.id, departments.title);
+            let departmentsListData:any[]=  data.map((department: IDepartment) => {
+                return department
             });
-            update(departmentsListData)
+            updateDepartmentList(departmentsListData)
 
         }).catch(()=>{
             nav('/login')
@@ -75,7 +76,7 @@ export default function Department() {
                                                 {department.id}
                                             </TableCell>
                                             <TableCell align="left">
-                                             <EditDepartment department={department}></EditDepartment>
+                                             <EditDepartment onUpdate={onUpdate} department={department}></EditDepartment>
                                             </TableCell>
 
                                         </TableRow>

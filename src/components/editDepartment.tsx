@@ -21,8 +21,8 @@ export const reducerDepartments = (state: any, action: { type: any; title: any; 
     }
 };
 
-const EditDepartment = (props:{department:IDepartment}) => {
-    const {department}=props
+const EditDepartment = (props:{department:IDepartment, onUpdate: (value: string) => void}) => {
+    const {department,onUpdate}=props
 
 
     const submit = (values: any, {setSubmitting, setErrors}: any) => {
@@ -50,7 +50,7 @@ const EditDepartment = (props:{department:IDepartment}) => {
             url: '/departments',
             payload: {id: id},
             requiresToken: true
-        })
+        }).then(()=>onUpdate(""))
     }
 
 
