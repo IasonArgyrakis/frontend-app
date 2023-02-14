@@ -37,7 +37,7 @@ const EditDepartment = (props:{department:IDepartment}) => {
         }).catch((errors) => {
             console.log(errors)
             setErrors({
-                title:errors.message
+               ...errors
             })
         })
 

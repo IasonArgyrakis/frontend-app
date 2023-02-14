@@ -24,7 +24,9 @@ const LoginPage = () => {
             navigate("/")
             }
         ).catch((errors) => {
-            setErrors(errors)
+            setErrors({
+                ...errors
+            })
         })
 
 

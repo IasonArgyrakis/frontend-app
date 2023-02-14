@@ -19,20 +19,23 @@ class App extends React.Component {
 
     render() {
         return (
-            <div>
+            <BrowserRouter>
+
                 <MenuAppBar/>
                 <Container maxWidth="xl">
-                    <BrowserRouter>
+
                         <Routes>
+                            <Route index path="/users" element={<UserPage/>}/>
                             <Route path="/login" element={<LoginPage />}/>
                             <Route path="/register" element={<RegisterPage />}/>
-                            <Route path="/users" element={<UserPage/>}/>
+
                             <Route path="/departments" element={<DepartmentPage/>}/>
 
                         </Routes>
-                    </BrowserRouter>
+
                 </Container>
-            </div>
+
+            </BrowserRouter>
 
         );
     }

@@ -95,7 +95,7 @@ class BackEndClient implements IHttpClient {
                         reject(error.data?.errors)
                     }
                     if(error.status===302){
-                        reject(error.data?.message)
+                        reject(error.data?.errors)
                     }
                     reject(error.data)
                 })
@@ -127,6 +127,9 @@ class BackEndClient implements IHttpClient {
                 .catch((response) => {
                     const error ={...response.response}
                     if(error.status===400){
+                        reject(error.data?.errors)
+                    }
+                    if(error.status===302){
                         reject(error.data?.errors)
                     }
                     reject(error.data)
@@ -162,6 +165,9 @@ class BackEndClient implements IHttpClient {
                 .catch((response) => {
                     const error ={...response.response}
                     if(error.status===400){
+                        reject(error.data?.errors)
+                    }
+                    if(error.status===302){
                         reject(error.data?.errors)
                     }
                     reject(error.data)

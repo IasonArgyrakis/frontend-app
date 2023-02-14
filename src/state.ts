@@ -10,11 +10,13 @@ export interface IUser {
     lastName: string;
     afm: string;
     email: string;
+    departments:Array<any>
 }
 
 export interface IDepartment {
     id: number;
     title: string;
+    users?:Array<IUser>
 }
 const users: IUser[] = []
 let departments: IDepartment[] = []
@@ -31,6 +33,20 @@ export const {useGlobalState} = createGlobalState({
 //         default: return state;
 //     }
 // };
+
+export const reducerUsers = (users:IUser[], action: { type: any; user: IUser; }) => {
+    switch (action.type) {
+        case 'update': return { ...users, users: updateModel(action.user,users) };
+        default: return users;
+    }
+};
+
+
+function updateModel(model:any,models:any){
+    const modelIndex=models.findIndex((element: { id: any; })=>element.id === model.id)
+    models[modelIndex]=model
+    return modelIndex
+}
 
 
 

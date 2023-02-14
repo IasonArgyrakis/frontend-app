@@ -5,9 +5,9 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
+import {useNavigate} from "react-router-dom";
+import {MenuItem} from "@mui/material";
+
 
 export default function MenuAppBar() {
     const [auth, setAuth] = React.useState(true);
@@ -17,13 +17,19 @@ export default function MenuAppBar() {
         console.log('menu')
         setAnchorEl(event.currentTarget);
     };
+    const navigate = useNavigate()
+
 
     const handleClose = () => {
         setAnchorEl(null);
     };
 
+    function toNavigate(url: string) {
+        navigate(url)
+    }
+
     return (
-        <Box sx={{ flexGrow: 1 }}>
+        <Box sx={{flexGrow: 1}}>
             <AppBar position="static">
                 <Toolbar>
                     <IconButton
@@ -31,45 +37,19 @@ export default function MenuAppBar() {
                         edge="start"
                         color="inherit"
                         aria-label="menu"
-                        sx={{ mr: 2 }}
+                        sx={{mr: 2}}
                     >
-                        <MenuIcon />
+                        <MenuIcon/>
                     </IconButton>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    <MenuItem onClick={()=>toNavigate("/users")}>
                         Users
-                    </Typography>
-                    {auth && (
-                        <div>
-                            <IconButton
-                                size="large"
-                                aria-label="account of current user"
-                                aria-controls="menu-appbar"
-                                aria-haspopup="true"
-                                onClick={handleMenu}
-                                color="inherit"
-                            >
-                                <AccountCircle />
-                            </IconButton>
-                            <Menu
-                                id="menu-appbar"
-                                anchorEl={anchorEl}
-                                anchorOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                open={Boolean(anchorEl)}
-                                onClose={handleClose}
-                            >
-                                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                                <MenuItem onClick={handleClose}>My account</MenuItem>
-                            </Menu>
-                        </div>
-                    )}
+
+                    </MenuItem>
+                    <MenuItem onClick={()=>toNavigate("/departments")}>
+                        Departments
+                    </MenuItem>
+
+
                 </Toolbar>
             </AppBar>
         </Box>

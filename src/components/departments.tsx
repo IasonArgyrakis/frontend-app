@@ -66,7 +66,7 @@ export default function Department() {
                         <TableBody>
                             {departments &&
                                 departments.map(department => {
-                                    console.log(department)
+
                                     return (
                                         <TableRow
                                             key={department.id}
