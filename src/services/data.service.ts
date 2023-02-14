@@ -1,5 +1,7 @@
 import axios, {AxiosRequestConfig, CreateAxiosDefaults} from 'axios'
 import {getToken} from "./auth";
+import {createData} from "../components/departments";
+import {IDepartment} from "../state";
 
 
 
@@ -15,8 +17,11 @@ export interface IHttpClient {
 
     post<T>(parameters: IHttpClientRequestParameters): Promise<T>
 
-    patch<T>(parameters: IHttpClientRequestParameters): Promise<T>
+    put<T>(parameters: IHttpClientRequestParameters): Promise<T>
+
+    delete<T>(parameters: IHttpClientRequestParameters): Promise<T>
 }
+
 
 
 
@@ -89,18 +94,22 @@ class BackEndClient implements IHttpClient {
                     if(error.status===400){
                         reject(error.data?.errors)
                     }
+                    if(error.status===302){
+                        reject(error.data?.message)
+                    }
                     reject(error.data)
                 })
         })
     }
 
-    patch<T>(parameters: IHttpClientRequestParameters): Promise<T> {
+    put<T>(parameters: IHttpClientRequestParameters): Promise<T> {
         return new Promise<T>((resolve, reject) => {
             const {url, payload, requiresToken} = parameters
 
             const options: AxiosRequestConfig = {
                 headers: {}
             }
+
 
             // if API endpoint requires a token, we'll need to add a way to add this.
             if (requiresToken) {
@@ -111,7 +120,42 @@ class BackEndClient implements IHttpClient {
 
             // finally execute the GET request with axios:
             this.backendClient
-                .patch(url, payload, options)
+                .put(url, payload, options)
+                .then((response: any) => {
+                    resolve(response.data as T)
+                })
+                .catch((response) => {
+                    const error ={...response.response}
+                    if(error.status===400){
+                        reject(error.data?.errors)
+                    }
+                    reject(error.data)
+                })
+        })
+    }
+
+    delete<T>(parameters: IHttpClientRequestParameters): Promise<T> {
+        return new Promise<T>((resolve, reject) => {
+            let {url, payload, requiresToken} = parameters
+
+            const options: AxiosRequestConfig = {
+                data:payload,
+                headers: {}
+            }
+
+            // if API endpoint requires a token, we'll need to add a way to add this.
+            if (requiresToken) {
+                options.headers = {
+                    Authorization: `Bearer ${getToken()}`
+                }
+            }
+            if(options.data.id){
+                url+=`/${options.data.id}`
+            }
+
+            // finally execute the GET request with axios:
+            this.backendClient
+                .delete(url, options)
                 .then((response: any) => {
                     resolve(response.data as T)
                 })

@@ -2,6 +2,14 @@
   text-align: center;
 }
 
+.ma-2{
+margin: 0.5rem;
+}
+
+.pa-2{
+  padding: 0.5rem;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

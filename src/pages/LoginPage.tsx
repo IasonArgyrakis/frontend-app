@@ -18,7 +18,7 @@ const LoginPage = () => {
 
         setSubmitting(false);
         login(values).then(()=>{
-                navigate("/")
+                navigate("/users")
             }
         ).catch((errors) => {
             setErrors(errors)

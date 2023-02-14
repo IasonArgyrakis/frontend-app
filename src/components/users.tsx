@@ -7,6 +7,10 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import {backend} from "../services/data.service";
+import {useNavigate} from "react-router-dom";
+import {IUser, useGlobalState} from '../state';
+import EditDepartment from "./editUser";
+import EditUser from "./editUser";
 
 
 
@@ -23,8 +27,9 @@ function createData(id: number,
 
 
 export default  function  Users () {
-    const userList: any[]=[];
-    const [users, setUsers] = useState({list:userList});
+
+    const nav=useNavigate();
+    const [users, update] = useGlobalState('users');
 
 
 
@@ -34,12 +39,14 @@ export default  function  Users () {
            url: '/users',
            requiresToken: true
        }).then((data: any) => {
-           const userListData=  data.map((user: { id: number; firstName: string; lastName: string; afm: string; email: string; }) => {
+           let userListData:any[]=  data.map((user: IUser) => {
                return createData(user.id, user.firstName, user.lastName, user.afm, user.email);
            });
-           setUsers( {list:userListData})
+           update(userListData)
 
-       })
+       }).catch(()=>{
+            nav('/login')
+        })
 
 
 
@@ -61,12 +68,13 @@ export default  function  Users () {
                             <TableCell>Last Name</TableCell>
                             <TableCell>AFM</TableCell>
                             <TableCell>Email</TableCell>
+                            <TableCell></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {users.list.length &&
-                            users.list.map(user => {
-                              console.log(user)
+                        {users.length &&
+                            users.map(user=> {
+
                                 return (
                                     <TableRow
                                         key={user.id}
@@ -74,10 +82,7 @@ export default  function  Users () {
                                         <TableCell component="th" scope="row">
                                             {user.id}
                                         </TableCell>
-                                        <TableCell align="right">{user.firstName}</TableCell>
-                                        <TableCell align="right">{user.lastName}</TableCell>
-                                        <TableCell align="right">{user.email}</TableCell>
-                                        <TableCell align="right">{user.afm}</TableCell>
+                                     <EditUser user={user} ></EditUser>
                                     </TableRow>
                                 );
                             })}

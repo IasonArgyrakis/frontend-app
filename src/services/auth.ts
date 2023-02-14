@@ -10,7 +10,7 @@ export const login = async (user:any) => {
 
 
         backend.post({
-            url: '/auth/singin',
+            url: '/auth/signin',
             payload: user,
         }).then((registered:any) => {
                 console.log(registered)
