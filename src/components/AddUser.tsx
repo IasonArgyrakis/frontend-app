@@ -4,6 +4,7 @@ import {Formik, Form, Field} from 'formik';
 import {TextField} from 'formik-mui';
 import {backend} from "../services/data.service";
 import {IUser} from "../state";
+import {UserDepartmentProps} from "./AddDepartment";
 
 
 export interface IUserValues {
@@ -15,11 +16,10 @@ export interface IUserValues {
 }
 
 
-const AddUser = () => {
-
+const AddUser = (props:UserDepartmentProps) => {
+    let {onUpdate} = props;
 
     const submit = (values: any, {setSubmitting, setErrors}: any) => {
-        console.log("subm")
         setSubmitting(false);
         backend.post({
             url: '/users',
@@ -27,7 +27,8 @@ const AddUser = () => {
             requiresToken:true
 
         })
-            .then((data) => {
+            .then((data) => {      onUpdate("list/2")
+
             }).catch((errors) => {
             console.log(errors)
             setErrors(

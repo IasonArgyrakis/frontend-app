@@ -8,7 +8,7 @@ export interface IUser {
     password?:string
     afm: string;
     email: string;
-    departments:Array<any>|[]
+    departments:Array<IDepartment>
 }
 
 export interface IDepartment {
@@ -35,6 +35,7 @@ export const {useGlobalState} = createGlobalState({
 export const reducerUsers = (users:IUser[], action: { type: any; user: IUser; }) => {
     switch (action.type) {
         case 'update': return { ...users, users: updateModel(action.user,users) };
+        case 'remove': return { ...users, users: deleteModel(action.user,users) };
         default: return users;
     }
 };
@@ -43,6 +44,11 @@ export const reducerUsers = (users:IUser[], action: { type: any; user: IUser; })
 function updateModel(model:any,models:any){
     const modelIndex=models.findIndex((element: { id: any; })=>element.id === model.id)
     models[modelIndex]=model
+    return modelIndex
+}
+function deleteModel(model:any,models:Array<any>){
+    const modelIndex=models.findIndex((element: { id: any; })=>element.id === model.id)
+    models.splice(modelIndex)
     return modelIndex
 }
 

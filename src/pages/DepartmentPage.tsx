@@ -1,4 +1,4 @@
-import Departments, {createDepartmentData} from "../components/departments";
+import Departments, {createDepartmentData} from "../components/Departments";
 import AddDepartment from "../components/AddDepartment";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";

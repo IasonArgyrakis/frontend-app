@@ -53,13 +53,12 @@ export function UserDialog(props: UserDialogProps) {
             requiresToken: true
         })
             .then((data) => {
-
-                    updateList(reducerUsers(users,
-                        {
-                            type: "update",
-                            user: values
-                        }
-                    ))
+                reducerUsers(users,
+                    {
+                        type: "update",
+                        user: values
+                    }
+                )
                     handleClose()
 
                 }

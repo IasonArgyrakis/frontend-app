@@ -7,8 +7,8 @@ import Dialog from '@mui/material/Dialog';
 
 import {backend} from "../services/data.service";
 import {IDepartment, IUser, reducerUsers, useGlobalState} from "../state";
-import {useEffect} from "react";
-import {createDepartmentData} from "./departments";
+import {useEffect, useState} from "react";
+import {createDepartmentData} from "./Departments";
 import {useNavigate} from "react-router-dom";
 import {Checkbox} from "@mui/material";
 import {createUserData} from "./Users";
@@ -23,79 +23,78 @@ export interface UserDepartmentDialogProps {
 
 export function UserDepartmentDialog(props: UserDepartmentDialogProps) {
     let {user, open, onClose} = props;
-    const [users, updateUsers] = useGlobalState('users');
     const [departments, updateDepartmentList] = useGlobalState('departments');
+    const [userState, userStateUpdate] = useState(user)
 
+    const handleCheck = (department: { id: any; checked: any; index:  number; }) => {
 
-    useEffect(() => {
-        backend.get({
-            url: '/departments',
-            requiresToken: true
-        }).then((data: any) => {
-            let departmentsListData: any[] = data.map((departments: IDepartment) => {
-                return createDepartmentData(departments.id, departments.title);
-            });
-            updateDepartmentList(departmentsListData)
-
-        }).catch(() => {
-
-        })
-
-
-    }, [])
-
-    const closeModal = () => {
-        onClose('userD')
-    }
-
-
-    const ManageUser = (e: any) => {
 
         const userUpdate = {
-            url: `/departments/${e.target.value}/user/${user.id}`,
+            url: `/departments/${userCheckboxes[department.index].id}/user/${userState.id}`,
             requiresToken: true
         }
+        console.log(userCheckboxes[department.index].checked)
+        if (userCheckboxes[department.index].checked===false) {
+            userCheckboxes[department.index].checked=true
 
-        const index = user.departments.findIndex((item) => item.id === parseInt(e.target.value))
-        console.log(index === -1)
-        if (index === -1) {
-
-            backend.put(userUpdate).finally(() => {
-                backend.get({
-                    url: '/users',
-                    requiresToken: true
-                }).then((data: any) => {
-                    let departmentsListData: any[] = data.map((user: IUser) => {
-                        return user
-                    });
-                    updateUsers(departmentsListData)
-
-                }).catch(() => {
-
-                })
+            backend.put(userUpdate).then(()=>{
+                userCheckboxes_([...userCheckboxes])
             })
 
-        } else {
-            backend.delete(userUpdate).finally(() => {
-                backend.get({
-                    url: '/users',
-                    requiresToken: true
-                }).then((data: any) => {
-                    let departmentsListData: any[] = data.map((user: IUser) => {
-                        return user
-                    });
-                    updateUsers(departmentsListData)
+        }else  if (userCheckboxes[department.index].checked===true) {
+            userCheckboxes[department.index].checked=false
 
-                }).catch(() => {
+            backend.delete(userUpdate).then(()=>{
+                userCheckboxes_([...userCheckboxes])
+            }).catch(()=>{
 
-                })
             })
-
         }
-
+    };
+    const makeCheckBoxes = () => {
+        let new_departments: any[];
+        new_departments = [];
+        console.log(user.departments)
+        departments.map((department,index) => {
+            let isInDepartment = (userState.departments?.findIndex((entry) => entry.id === department.id) >= 0);
+            new_departments.push({index:index,id: department.id, title: department.title, checked: isInDepartment})
+        })
+        console.log(new_departments)
+        return new_departments
 
 
     }
+    const [userCheckboxes, userCheckboxes_] = useState(makeCheckBoxes)
+
+
+
+    const update = () => {
+        let new_departments: any[];
+        new_departments = [];
+        console.log(user.departments)
+        departments.map((department,index) => {
+            let isInDepartment = (userState.departments?.findIndex((entry) => entry.id === department.id) >= 0);
+            new_departments.push({index:index,id: department.id, title: department.title, checked: isInDepartment})
+        })
+        console.log(new_departments)
+        return new_departments
+
+
+    }
+
+
+    const closeModal = () => {
+
+        onClose('userD')
+    }
+    useEffect(() => {
+        console.log("refresh")
+    }, [departments,user])
+
+
+
+
+
 
 
     const fieldStyle = {
@@ -108,18 +107,15 @@ export function UserDepartmentDialog(props: UserDepartmentDialogProps) {
             <DialogTitle>Update user Info</DialogTitle>
             <div style={fieldStyle}>
 
-                {departments.map((department) => {
-                        let isInDepartment = user.departments?.find((entry) => entry?.id === department.id)
+                {userCheckboxes.map((department,index) => {
 
 
                         return (
-                            <div>
+                            <div key={index}>
                                 <Checkbox
-                                    checked={isInDepartment}
+                                    checked={department.checked}
                                     value={department.id}
-                                    onChange={ManageUser}
-                                    defaultChecked={false}
-
+                                    onClick={()=>handleCheck(userCheckboxes[department.index])}
                                 />
                                 {department.title}
                                 <br/>

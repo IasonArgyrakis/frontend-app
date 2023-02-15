@@ -8,86 +8,91 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import {backend} from "../services/data.service";
 import {useNavigate} from "react-router-dom";
-import {IUser, useGlobalState} from '../state';
+import {IDepartment, IUser, reducerUsers, useGlobalState} from '../state';
 import {Button} from "@mui/material";
 import {UserDialog} from "./UserDialog";
 import {UserDepartmentDialog} from "./UserDepartmentDialog";
 
 
-
-export function createUserData(user:IUser) {
+export function createUserData(user: IUser) {
     return user;
 
 }
+
 export interface UserPageProps {
 
-    onUpdate: (value: string) => void;
+    users: IUser[]
 
 }
 
 
 export default function Users() {
     const nav = useNavigate();
-    const [users, updateUsers] = useGlobalState('users');
-    const loadData = () => {
-        backend.get({
-            url: '/users',
-            requiresToken: true
-        }).then((data: any) => {
-            let userListData: any[] = data.map((user: IUser) => {
-                return user
-            });
-            console.log("eUsers")
-            updateUsers(userListData)
-
-        }).catch(() => {
-            // nav('/login')
-        })
-    }
-
+    const [departments, departments_] = useGlobalState("departments");
+    const [localUsers, localUsers_] = useGlobalState("users");
+    const [userEditOpen, OpenUserEdit] = useState(false);
+    const [userDepartmentOpen, OpenUserDepartments] = useState(false);
+    let [selectedUser, setSelectedUser] = useState<IUser>({
+        afm: "",
+        email: "",
+        firstName: "",
+        id: 0,
+        lastName: "", departments: [],
+        password: ""
+    });
 
     useEffect(() => {
-
-    loadData()
-
-    }, [])
-
-    const userState: IUser = {afm: "", email: "", firstName: "", id: 0, lastName: "",departments:[]}
-    const [userEditOpen, OpenUserEdit] = React.useState(false);
-    const [userDepartmentOpen, OpenUserDepartments] = React.useState(false);
-    const [selectedUser, setSelectedUser] = React.useState(userState);
+        console.log(departments)
+    }, [departments])
 
 
     const handleClose = (value: string) => {
-
-
-        if("user"){
-            OpenUserEdit(false);
-
-        }
-        if("userD"){
-            OpenUserDepartments(false);
-
-        }
-
-
+        console.log(value)
+        OpenUserDepartments(false);
+        OpenUserEdit(false);
+        setSelectedUser({
+            afm: "",
+            email: "",
+            firstName: "",
+            id: 0,
+            lastName: "",
+            password: "",
+            departments: [],
+        })
         backend.get({
             url: '/users',
             requiresToken: true
         }).then((data: any) => {
-            let userListData: any[] = data.map((user: IUser) => {
-                return user
+            let departmentsListData:any[]=  data.map((department: IDepartment) => {
+                return department
             });
-            console.log(userListData)
-            updateUsers(userListData)
+            localUsers_(departmentsListData)
 
-        }).catch(() => {
-           // nav('/login')
+        }).catch(()=>{
+            nav('/login')
         })
 
     };
 
 
+    const deleteUser = (user: IUser) => {
+        backend.delete({
+            url: "/users",
+            payload: user,
+            requiresToken: true
+        })
+        reducerUsers(localUsers, {type: "remove", user: user})
+        setSelectedUser({
+            afm: "",
+            email: "",
+            firstName: "",
+            id: 0,
+            lastName: "",
+            password: "",
+            departments: [],
+        })
+
+    };
     return (
         <TableContainer component={Paper}>
             <Table sx={{minWidth: 650}} aria-label="simple table">
@@ -102,8 +107,8 @@ export default function Users() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {users.length &&
-                        users.map((user: IUser) => {
+                    {localUsers.length &&
+                        localUsers.map((user: IUser) => {
 
                             return (
                                 <TableRow
@@ -123,12 +128,12 @@ export default function Users() {
                                         }}>
                                             Edit
                                         </Button>
-                                        <UserDialog
-                                            user={selectedUser}
-                                            open={userEditOpen}
-                                            onClose={handleClose}/>
-
-
+                                        <Button style={{marginLeft: "10px"}}
+                                                variant="outlined" onClick={() => {
+                                            deleteUser(user)
+                                        }}>
+                                            Delete
+                                        </Button>
                                         <Button style={{marginLeft: "10px"}}
                                                 variant="outlined" onClick={() => {
                                             setSelectedUser(user)
@@ -136,12 +141,22 @@ export default function Users() {
                                         }}>
                                             Edit Departments
                                         </Button>
+                                        { (selectedUser) &&
 
-                                        <UserDepartmentDialog
-                                            key={user.id}
-                                            user={selectedUser}
-                                            open={userDepartmentOpen}
-                                            onClose={handleClose}/>
+                                            <UserDialog
+                                                user={selectedUser}
+                                                open={userEditOpen}
+                                                onClose={handleClose}/>
+                                        }
+
+
+                                        { (userDepartmentOpen) &&
+
+                                            <UserDepartmentDialog
+                                                key={user.id}
+                                                user={selectedUser}
+                                                open={userDepartmentOpen}
+                                                onClose={handleClose}/>}
 
                                     </TableCell>
                                 </TableRow>

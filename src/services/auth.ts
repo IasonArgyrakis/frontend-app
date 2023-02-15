@@ -35,9 +35,7 @@ export const register = async (user: any) => {
             url: '/auth/signup',
             payload: user,
         }).then((registered:any) => {
-            console.log(registered)
             const token=registered.access_token
-            console.log(token)
                 localStorage.setItem(access_token,token );
                 resolve(registered)
             }
@@ -68,6 +66,5 @@ export const isLoggedIn = () => {
 };
 
 export const getToken = () => {
-    console.log(localStorage.getItem(access_token))
     return localStorage.getItem(access_token);
 };

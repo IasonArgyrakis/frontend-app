@@ -13,7 +13,7 @@ import {Field, Form, Formik} from "formik";
 import {TextField} from "formik-mui";
 import {IDepartmentValues, UserDepartmentProps} from "./AddDepartment";
 import {IDepartment, IUser, useGlobalState} from "../state";
-import EditDepartment from "./editDepartment";
+import EditDepartment from "./EditDepartment";
 
 
 export function createDepartmentData(id: number,
@@ -28,29 +28,11 @@ export default function Department(props:UserDepartmentProps){
 
     const nav = useNavigate();
     const [departments, updateDepartmentList] = useGlobalState('departments');
+    useEffect(()=>{console.log(departments)},[...departments])
 
     let {onUpdate} = props;
 
 
-
-
-    useEffect(()=>{
-        backend.get({
-            url: '/departments',
-            requiresToken: true
-        }).then((data: any) => {
-            let departmentsListData:any[]=  data.map((department: IDepartment) => {
-                return department
-            });
-            updateDepartmentList(departmentsListData)
-
-        }).catch(()=>{
-            nav('/login')
-        })
-
-
-
-    },[])
 
 
     return (

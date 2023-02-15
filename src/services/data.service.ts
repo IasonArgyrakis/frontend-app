@@ -1,6 +1,6 @@
 import axios, {AxiosRequestConfig, CreateAxiosDefaults} from 'axios'
 import {getToken} from "./auth";
-import {createDepartmentData} from "../components/departments";
+import {createDepartmentData} from "../components/Departments";
 import {IDepartment} from "../state";
 
 
@@ -152,7 +152,7 @@ class BackEndClient implements IHttpClient {
                     Authorization: `Bearer ${getToken()}`
                 }
             }
-            if(options.data.id){
+            if(options?.data?.id){
                 url+=`/${options.data.id}`
             }
 
