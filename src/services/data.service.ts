@@ -85,7 +85,6 @@ class BackEndClient implements IHttpClient {
             this.backendClient
                 .post(url, payload, options)
                 .then((response: any) => {
-                    console.log(response)
                     resolve(response.data as T)
                 })
                 .catch((response) => {

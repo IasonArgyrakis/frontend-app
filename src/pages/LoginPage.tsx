@@ -29,7 +29,7 @@ const LoginPage = () => {
 
     return (
         <div>
-            <h1>Register</h1>
+            <h1>Login</h1>
             <Formik
                 initialValues={{
                     email: "",
@@ -51,21 +51,27 @@ const LoginPage = () => {
             >
                 {({submitForm, isSubmitting}) => (
                     <Form>
-                        <Field
-                            component={TextField}
-                            name="email"
-                            type="email"
-                            label="Email"
-                        />
-                        <br/>
-                        <Field
-                            component={TextField}
-                            type="password"
-                            label="Password"
-                            name="password"
-                        />
-                        <br/>
+                        <div className={"ma-2"}>
+                            <Field
+                                component={TextField}
+                                name="email"
+                                type="email"
+                                label="Email"
+                            />
+                            <br/>
 
+                        </div>
+                        <div className={"ma-2"}>
+                            <Field
+                                component={TextField}
+                                type="password"
+                                label="Password"
+                                name="password"
+                            />
+                            <br/>
+
+                        </div>
+                        <div className={"ma-2"}>
                         <Button
                             variant="contained"
                             color="primary"
@@ -74,6 +80,7 @@ const LoginPage = () => {
                         >
                             Submit
                         </Button>
+                        </div>
                     </Form>
                 )}
             </Formik>

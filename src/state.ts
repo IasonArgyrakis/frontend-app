@@ -24,13 +24,16 @@ export const {useGlobalState} = createGlobalState({
     users: users,
 });
 
-// export const reducerDepartments = (state, action) => {
-//     switch (action.type) {
-//         case 'increment': return { ...state, count: state.count + 1 };
-//         case 'decrement': return { ...state, count: state.count - 1 };
-//         default: return state;
-//     }
-// };
+export const reducerDepartments =  (departments:IDepartment[], action: { type: any; department: IDepartment; }) => {
+  switch (action.type) {
+        case 'add':
+            addModel(action.department,departments)
+            return {  departments };
+        case 'update': return { ...departments, departments: updateModel(action.department,departments) };
+        case 'remove': return { ...departments, departments: deleteModel(action.department,departments) };
+        default: return departments;
+    }
+};
 
 export const reducerUsers = (users:IUser[], action: { type: any; user: IUser; }) => {
     switch (action.type) {
@@ -39,7 +42,10 @@ export const reducerUsers = (users:IUser[], action: { type: any; user: IUser; })
         default: return users;
     }
 };
-
+function addModel(model:any,models:any){
+    models.push(model)
+    return [...models]
+}
 
 function updateModel(model:any,models:any){
     const modelIndex=models.findIndex((element: { id: any; })=>element.id === model.id)

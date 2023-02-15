@@ -4,7 +4,7 @@ import {Formik, Form, Field} from 'formik';
 import {TextField} from 'formik-mui';
 
 import {backend} from "../services/data.service";
-import {IDepartment, useGlobalState} from "../state";
+import {IDepartment, reducerDepartments,useGlobalState} from "../state";
 
 
 export interface IDepartmentValues {
@@ -19,29 +19,30 @@ export interface UserDepartmentProps {
 
 const AddDepartment = (props: UserDepartmentProps) => {
 
-    const [departments, departments_] = useGlobalState('departments');
-
+    const [departments, updateDepartmentList_G] = useGlobalState('departments');
     let {onUpdate} = props;
 
 
     const submit = (values: any, {setSubmitting, setErrors}: any) => {
-        console.log(departments)
+
         setSubmitting(false);
         backend.post({
             url: '/departments',
             payload: values,
         })
             .then((data:any) => {
-                departments.push(data)
-                departments_(departments)
+             reducerDepartments(departments,{
+                    type:"add",
+                    department:data
+                })
             }).catch((errors) => {
             console.log(errors)
             setErrors(
                 errors
             )
         })
-
-
+        console.log(departments)
+        onUpdate("")
     }
 
     return (

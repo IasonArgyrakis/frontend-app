@@ -12,14 +12,6 @@ export interface IDepartmentValues {
     title: string;
 }
 
-export const reducerDepartments = (state: any, action: { type: any; title: any; }) => {
-    console.log(state)
-
-    switch (action.type) {
-        //case 'rename': return { ...state, title: action.title };
-        default: return state;
-    }
-};
 
 const EditDepartment = (props:{department:IDepartment, onUpdate: (value: string) => void}) => {
     const {department,onUpdate}=props

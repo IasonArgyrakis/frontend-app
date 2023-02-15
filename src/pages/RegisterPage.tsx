@@ -21,7 +21,7 @@ const LoginPage = () => {
 
         setSubmitting(false);
         register(values).then(()=>{
-            navigate("/")
+            navigate("/users")
             }
         ).catch((errors) => {
             setErrors({
@@ -58,6 +58,7 @@ const LoginPage = () => {
             >
                 {({submitForm, isSubmitting}) => (
                     <Form>
+                        <div className={"ma-2"}>
                         <Field
                             component={TextField}
                             name="email"
@@ -65,6 +66,8 @@ const LoginPage = () => {
                             label="Email"
                         />
                         <br/>
+                        </div>
+                        <div className={"ma-2"}>
                         <Field
                             component={TextField}
                             type="password"
@@ -72,6 +75,8 @@ const LoginPage = () => {
                             name="password"
                         />
                         <br/>
+                        </div>
+                        <div className={"ma-2"}>
                         <Field
                             component={TextField}
                             type="text"
@@ -79,6 +84,8 @@ const LoginPage = () => {
                             name="firstName"
                         />
                         <br/>
+                        </div>
+                        <div className={"ma-2"}>
                         <Field
                             component={TextField}
                             type="text"
@@ -86,6 +93,8 @@ const LoginPage = () => {
                             name="lastName"
                         />
                         <br/>
+                        </div>
+                        <div className={"ma-2"}>
                         <Field
                             component={TextField}
                             type="text"
@@ -93,6 +102,8 @@ const LoginPage = () => {
                             name="afm"
                         />
                         <br/>
+                        </div>
+                        <div className={"ma-2"}>
                         <Button
                             variant="contained"
                             color="primary"
@@ -101,6 +112,7 @@ const LoginPage = () => {
                         >
                             Submit
                         </Button>
+                        </div>
                     </Form>
                 )}
             </Formik>

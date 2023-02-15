@@ -7,6 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import {useNavigate} from "react-router-dom";
 import {MenuItem} from "@mui/material";
+import {isLoggedIn, logout} from "./services/auth";
 
 
 export default function MenuAppBar() {
@@ -31,26 +32,32 @@ export default function MenuAppBar() {
     return (
         <Box sx={{flexGrow: 1}}>
             <AppBar position="static">
-                <Toolbar>
-                    <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="menu"
-                        sx={{mr: 2}}
-                    >
-                        <MenuIcon/>
-                    </IconButton>
-                    <MenuItem onClick={()=>toNavigate("/users")}>
-                        Users
+                {!isLoggedIn() &&
+                    <Toolbar>
 
-                    </MenuItem>
-                    <MenuItem onClick={()=>toNavigate("/departments")}>
-                        Departments
-                    </MenuItem>
+                        <MenuItem onClick={() => toNavigate("/login")}>
+                            Login
 
+                        </MenuItem>
+                        <MenuItem onClick={() => toNavigate("/register")}>
+                            Register
+                        </MenuItem>
+                    </Toolbar>
+                }
+                {isLoggedIn() &&
+                    <Toolbar>
+                        <MenuItem onClick={() => toNavigate("/users")}>
+                            Users
 
-                </Toolbar>
+                        </MenuItem>
+                        <MenuItem onClick={() => toNavigate("/departments")}>
+                            Departments
+                        </MenuItem>
+                        <MenuItem onClick={() => {logout() ;toNavigate("/login") }}>
+                            Log Out
+                        </MenuItem>
+                    </Toolbar>
+                }
             </AppBar>
         </Box>
     );
