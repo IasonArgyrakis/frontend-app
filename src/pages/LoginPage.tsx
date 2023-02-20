@@ -1,5 +1,5 @@
 import React from 'react';
-import {login, register} from '../services/auth';
+import {login} from '../services/auth.service';
 import {Button} from "@mui/material";
 import {Formik, Form, Field} from 'formik';
 import {TextField} from 'formik-mui';
@@ -72,14 +72,14 @@ const LoginPage = () => {
 
                         </div>
                         <div className={"ma-2"}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            disabled={isSubmitting}
-                            onClick={submitForm}
-                        >
-                            Submit
-                        </Button>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                disabled={isSubmitting}
+                                onClick={submitForm}
+                            >
+                                Submit
+                            </Button>
                         </div>
                     </Form>
                 )}

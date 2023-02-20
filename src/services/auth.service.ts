@@ -1,5 +1,5 @@
 import jwtDecode from 'jwt-decode';
-import {backend} from "./data.service";
+import {backend} from "./backend.service";
 
 
 const access_token = 'super-secret';

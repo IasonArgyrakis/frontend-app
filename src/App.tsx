@@ -1,48 +1,42 @@
 import React from 'react';
-
-
-
-
+import logo from './logo.svg';
 import './App.css';
-
-import MenuAppBar from "./MenuAppBar";
-import {Container} from "@mui/material";
 import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
-import LoginPage from './pages/LoginPage';
+import {Container} from "@mui/material";
+import MenuAppBar from "./components/MenuAppBar";
+import  UsersPage  from "./pages/UsersPage";
+
+import {createGlobalState} from "react-hooks-global-state";
 import RegisterPage from "./pages/RegisterPage";
-import UserPage from "./pages/UserPage";
-import DepartmentPage from "./pages/DepartmentPage";
-import {isLoggedIn} from "./services/auth";
+import LoginPage from "./pages/LoginPage";
+import DepartmentsPage from "./pages/DepartmensPage";
 
+const { useGlobalState } = createGlobalState({ departments: [] });
+function App() {
+    const [departments, setDep] = useGlobalState('departments');
 
+  return (
+      <BrowserRouter>
 
-class App extends React.Component {
+        <MenuAppBar/>
+        <Container maxWidth="xl">
 
-    render() {
-        return (
-            <BrowserRouter>
+          <Routes>
+            <Route
+                path="/"
+                element={<Navigate to="/users" />}
+            />
+              <Route path="/register" element={<RegisterPage/>}/>
+              <Route path="/login" element={<LoginPage/>}/>
+              <Route path="/users" element={<UsersPage/>}/>
+              <Route path="/departments" element={<DepartmentsPage/>}/>
 
-                <MenuAppBar/>
-                <Container maxWidth="xl">
+          </Routes>
 
-                        <Routes>
-                            <Route
-                                path="/"
-                                element={<Navigate to="/register" />}
-                            />
-                            <Route path="/users" element={<UserPage/>}/>
-                            <Route path="/login" element={<LoginPage />}/>
-                            <Route path="/register" element={<RegisterPage />}/>
-                            <Route path="/departments" element={<DepartmentPage/>}/>
+        </Container>
 
-                        </Routes>
-
-                </Container>
-
-            </BrowserRouter>
-
-        );
-    }
+      </BrowserRouter>
+  );
 }
 
 export default App;

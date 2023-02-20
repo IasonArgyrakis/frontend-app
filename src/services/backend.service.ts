@@ -1,7 +1,6 @@
-import axios, {AxiosRequestConfig, CreateAxiosDefaults} from 'axios'
-import {getToken} from "./auth";
-import {createDepartmentData} from "../components/Departments";
-import {IDepartment} from "../state";
+import axios, {AxiosRequestConfig, AxiosDefaults} from 'axios'
+import {getToken} from "./auth.service";
+
 
 
 
@@ -27,7 +26,7 @@ export interface IHttpClient {
 
 class BackEndClient implements IHttpClient {
 
-    config: CreateAxiosDefaults = {
+    config: AxiosRequestConfig = {
         baseURL: 'http://localhost:3333'
     }
     backendClient = axios.create(this.config)

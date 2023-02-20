@@ -1,5 +1,5 @@
 import React from 'react';
-import {register} from '../services/auth';
+import {register} from '../services/auth.service';
 import {Button} from "@mui/material";
 import {Formik, Form, Field} from 'formik';
 import {TextField} from 'formik-mui';
@@ -15,13 +15,13 @@ interface Values {
     afm: string;
 }
 
-const LoginPage = () => {
+const RegisterPage = () => {
     const navigate = useNavigate();
     const submit = (values: any, {setSubmitting, setErrors}: any) => {
 
         setSubmitting(false);
         register(values).then(()=>{
-            navigate("/users")
+                navigate("/users")
             }
         ).catch((errors) => {
             setErrors({
@@ -59,59 +59,59 @@ const LoginPage = () => {
                 {({submitForm, isSubmitting}) => (
                     <Form>
                         <div className={"ma-2"}>
-                        <Field
-                            component={TextField}
-                            name="email"
-                            type="email"
-                            label="Email"
-                        />
-                        <br/>
+                            <Field
+                                component={TextField}
+                                name="email"
+                                type="email"
+                                label="Email"
+                            />
+                            <br/>
                         </div>
                         <div className={"ma-2"}>
-                        <Field
-                            component={TextField}
-                            type="password"
-                            label="Password"
-                            name="password"
-                        />
-                        <br/>
+                            <Field
+                                component={TextField}
+                                type="password"
+                                label="Password"
+                                name="password"
+                            />
+                            <br/>
                         </div>
                         <div className={"ma-2"}>
-                        <Field
-                            component={TextField}
-                            type="text"
-                            label="firstName"
-                            name="firstName"
-                        />
-                        <br/>
+                            <Field
+                                component={TextField}
+                                type="text"
+                                label="firstName"
+                                name="firstName"
+                            />
+                            <br/>
                         </div>
                         <div className={"ma-2"}>
-                        <Field
-                            component={TextField}
-                            type="text"
-                            label="lastName"
-                            name="lastName"
-                        />
-                        <br/>
+                            <Field
+                                component={TextField}
+                                type="text"
+                                label="lastName"
+                                name="lastName"
+                            />
+                            <br/>
                         </div>
                         <div className={"ma-2"}>
-                        <Field
-                            component={TextField}
-                            type="text"
-                            label="afm"
-                            name="afm"
-                        />
-                        <br/>
+                            <Field
+                                component={TextField}
+                                type="text"
+                                label="afm"
+                                name="afm"
+                            />
+                            <br/>
                         </div>
                         <div className={"ma-2"}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            disabled={isSubmitting}
-                            onClick={submitForm}
-                        >
-                            Submit
-                        </Button>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                disabled={isSubmitting}
+                                onClick={submitForm}
+                            >
+                                Submit
+                            </Button>
                         </div>
                     </Form>
                 )}
@@ -120,4 +120,4 @@ const LoginPage = () => {
     );
 };
 
-export default LoginPage;
+export default RegisterPage;

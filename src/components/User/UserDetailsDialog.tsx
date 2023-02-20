@@ -1,65 +1,42 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
+
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
-import PersonIcon from '@mui/icons-material/Person';
-import AddIcon from '@mui/icons-material/Add';
-import Typography from '@mui/material/Typography';
-import {blue} from '@mui/material/colors';
+
 import {Field, Form, Formik} from "formik";
 import {TextField} from "formik-mui";
-import {register} from "../services/auth";
-import {backend} from "../services/data.service";
-import {IUser, reducerUsers, useGlobalState} from "../state";
 import {useState} from "react";
+import {IUser} from "../../services/dto/Users.dto";
+import {backend} from "../../services/backend.service";
 
-const emails = ['username@gmail.com', 'user02@gmail.com'];
 
-export interface UserDialogProps {
-    open: boolean;
-    user: IUser;
-    onClose: (value: string) => void;
 
-}
 
-export function UserDialog(props: UserDialogProps) {
+export function UserDetailsDialog(props:any) {
     let {user, open, onClose} = props;
-    const [dialogStateLocal, closeDialog] = React.useState(open);
-    const [users, updateList] = useGlobalState('users');
+    const [userState, userStateUpdate] = useState(user)
 
 
 
-    const handleClose = () => {
-        onClose("");
+    const handleClose = (value:any) => {
+        onClose(value);
     };
 
-    const handleListItemClick = (value: string) => {
-
-    };
 
     const submit = (values: any, {setSubmitting, setErrors}: any) => {
 
         setSubmitting(false);
         delete values.departments
+
         backend.put({
             url: '/users',
             payload: values,
             requiresToken: true
         })
             .then((data) => {
-                reducerUsers(users,
-                    {
-                        type: "update",
-                        user: values
-                    }
-                )
-                    handleClose()
+                    console.log(data)
+                    onClose(data)
 
                 }
             ).catch((errors) => {
